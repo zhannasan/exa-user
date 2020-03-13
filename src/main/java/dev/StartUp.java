@@ -1,11 +1,15 @@
 package dev;
 
+import java.util.Arrays;
+
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import dev.domains.UserExa;
+import dev.domains.Role;
+import dev.domains.RoleUser;
+import dev.domains.Userexa;
 import dev.repository.UserRepository;
 
 @Component
@@ -23,9 +27,11 @@ public class StartUp {
 
 	@EventListener(ContextRefreshedEvent.class)
 	public void onStart() {
-		UserExa admin = new UserExa();
+		Userexa admin = new Userexa();
 		admin.setUsername("admin");
 		admin.setPassword(passwordEncoder.encode("admin"));
+		admin.setEmail("admin@exa.fr");
+		admin.setRoles(Arrays.asList(new RoleUser(admin, Role.ROLE_ADMIN)));
 		this.userRepository.save(admin);
 	}
 }

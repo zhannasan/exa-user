@@ -2,6 +2,8 @@ package dev.security;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -21,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dev.domains.UserExa;
+import dev.domains.Userexa;
 import dev.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 
@@ -54,27 +56,27 @@ public class JWTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        LOG.info("Génération du token JWT");
+        LOG.info("Token JWT generation");
 
         User user = (User) authentication.getPrincipal();
 
         String rolesList = user.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining(","));
 
-		UserExa usr = userRepository.findByUsername(user.getUsername())
+		Userexa usr = userRepository.findByUsername(user.getUsername())
 				.orElseThrow(() -> new IllegalArgumentException("Username does not exist"));
 
         response.setContentType("application/json");
 		response.getWriter().write(mapper.writeValueAsString(usr));
 
-		/*
-		 * Map<String, Object> infosSupplementaireToken = new HashMap<>();
-		 * infosSupplementaireToken.put("roles", rolesList);
-		 * LOG.info("roles {} ", infosSupplementaireToken);
-		 */
+		
+		  Map<String, Object> infoToken = new HashMap<>();
+		  infoToken.put("roles", rolesList);
+		  LOG.info("roles {} ", infoToken);
+		 
 
         String jws = Jwts.builder()
                 .setSubject(user.getUsername())
-				// .addClaims(infosSupplementaireToken)
+				.addClaims(infoToken)
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRES_IN * 1000))
                 .signWith(io.jsonwebtoken.SignatureAlgorithm.HS512, SECRET)
                 .compact();
@@ -84,6 +86,6 @@ public class JWTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
         authCookie.setMaxAge(EXPIRES_IN * 1000);
         authCookie.setPath("/");
         response.addCookie(authCookie);
-        LOG.info("Token JWT généré posé dans un cookie et en entête HTTP");
+        LOG.info("Generated JWT token put into cookie and HTTP header");
     }
 }

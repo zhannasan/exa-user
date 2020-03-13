@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import dev.domains.UserExa;
+import dev.domains.Userexa;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserExa, Long> {
+public interface UserRepository extends JpaRepository<Userexa, Long> {
 
-	Optional<UserExa> findByUsername(String username);
+	Optional<Userexa> findByUsername(String username);
 }
