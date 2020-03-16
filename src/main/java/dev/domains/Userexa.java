@@ -1,14 +1,11 @@
 package dev.domains;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -31,15 +28,15 @@ public class Userexa {
 	@Size(min = 5)
 	private String email;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<RoleUser> roles;
+	@Enumerated(EnumType.STRING)
+	private Role roles;
 	/**
 	 * 
 	 */
 	public Userexa() {
 	}
 	public Userexa(@NotEmpty @Size(min = 2) String username, @NotEmpty @Size(min = 5) String password,
-			@NotEmpty @Size(min = 5) String email, List<RoleUser> roles) {
+			@NotEmpty @Size(min = 5) String email, Role roles) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -70,12 +67,11 @@ public class Userexa {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public List<RoleUser> getRoles() {
+	public Role getRoles() {
 		return roles;
 	}
-	public void setRoles(List<RoleUser> roles) {
+	public void setRoles(Role roles) {
 		this.roles = roles;
 	}
-
 	
 }

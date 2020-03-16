@@ -47,11 +47,11 @@ public class JWTAuthorizationFilter  extends OncePerRequestFilter {
 
                         String username = body.getSubject();
 
-                        List<SimpleGrantedAuthority> roles = Arrays.asList(body.get("roles", String.class).split(","))
+                        List<SimpleGrantedAuthority> role = Arrays.asList(body.get("role", String.class).split(","))
                         		.stream().map(roleString -> new SimpleGrantedAuthority(roleString))
                         		.collect(Collectors.toList());
 
-                        Authentication authentication =  new UsernamePasswordAuthenticationToken(username, null, roles);
+                        Authentication authentication =  new UsernamePasswordAuthenticationToken(username, null, role);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     });
         }
